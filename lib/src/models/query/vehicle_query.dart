@@ -7,10 +7,11 @@ import 'package:ktcarmaintenanceflutter/src/models/vehicles.dart';
 
 class VehicleQuery {
   VehicleQuery();
+  
+  Vehicle query = Vehicle(); // init query with Vehicle model query
+  VehicleFilterBuilder _select = Vehicle().select(); // init query builder select vehicle
 
-  Vehicle query = Vehicle();
-  VehicleFilterBuilder _select = Vehicle().select();
-
+  // get vehicle by id
   Future<Vehicle?> find(id) async {
     try {
       final vehicle = await query.getById(id);
@@ -21,12 +22,19 @@ class VehicleQuery {
     }
   }
 
-  VehicleQuery select({List<String>? columnsToSelect, bool? getIsDeleted}) {
+  // set select params in filter builder
+  VehicleQuery select({
+    List<String>? columnsToSelect, 
+    bool? getIsDeleted
+  }) {
     _select = query.select(
-        columnsToSelect: columnsToSelect, getIsDeleted: getIsDeleted);
+      columnsToSelect: columnsToSelect, 
+      getIsDeleted: getIsDeleted
+    );
     return this;
   }
 
+  // execute query and get all data using select filter
   Future<List<Vehicle>> get() async {
     try {
       final result = await _select.toList();
@@ -37,17 +45,22 @@ class VehicleQuery {
     }
   }
 
-  Future<VehiclePaginate> paginate({int page = 1, int perPage = 10}) async {
+  // execute query and get data with pagination using select filter
+  Future<VehiclePaginate> paginate({
+    int page = 1, 
+    int perPage = 10
+  }) async {
     try {
       final vehicles = await _select.page(page, perPage).toList();
       final totalCount = await _select.toCount();
       final totalPages = (totalCount / perPage).ceil();
       final result = VehiclePaginate(
-          page: page,
-          perPage: perPage,
-          totalCount: totalCount,
-          totalPages: totalPages,
-          data: vehicles);
+        page: page,
+        perPage: perPage,
+        totalCount: totalCount,
+        totalPages: totalPages,
+        data: vehicles
+      );
       return result;
     } catch (e) {
       print('error paginate VehicleQuery ${e.toString()}');
