@@ -1,6 +1,8 @@
 // ignore_for_file: avoid_print
 
 import 'package:ktcarmaintenanceflutter/src/models/database.dart';
+import 'package:ktcarmaintenanceflutter/src/models/maintenances.dart';
+import 'package:ktcarmaintenanceflutter/src/models/query/maintenance_query.dart';
 import 'package:ktcarmaintenanceflutter/src/models/query/vehicle_query.dart';
 import 'package:ktcarmaintenanceflutter/src/models/vehicles.dart';
 
@@ -93,15 +95,15 @@ class VehicleRepository {
   }
 
   // get list maintenance of vehicle with pagination
-  Future<List<Maintenance>>getVehicleMaintenanceList({
+  Future<MaintenancePaginate>getVehicleMaintenanceList({
     required Vehicle vehicle,
     int page = 1,
     int perPage = 10
   }) async{
+    MaintenanceQuery query = MaintenanceQuery();
     try{
-      final maintenances = await vehicle.getMaintenances()?.page(page, perPage).toList();
-      return maintenances ?? [];
-
+      final maintenances = await query.fromVehicle(vehicle).paginate(page: page, perPage: perPage);
+      return maintenances;
     }catch(e){
       print('error get vehicle ${e.toString()}');
       throw Exception('Error get vehicle');
