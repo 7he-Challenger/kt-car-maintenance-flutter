@@ -1,0 +1,11 @@
+targets:
+  $default:
+    builders:
+      sqfentity_gen|property_sqfentity:
+        generate_for:
+          - lib/src/models/*.dart
+          - lib/src/models/test/*.dart
+      # source_gen|combining_builder:
+      #   options:
+      #     ignore_for_file:
+      #       - implicit_dynamic_parameter
